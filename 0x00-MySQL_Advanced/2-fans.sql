@@ -1,5 +1,8 @@
 -- Ranks country by origin and unique fans
 
+
+USE metal_bands;
+
 SELECT
     origin,
     SUM(fans) AS nb_fans,
