@@ -8,6 +8,21 @@ from functools import wraps
 from  typing import Union, Callable
 
 
+def count_calls(method: Callable) -> Callable:
+    """
+    Fixing in a decorator
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """
+        The wrapper function
+        """
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, *args, *kwargs)
+    return wrapper
+
+
 class Cache:
     """
     This is a class for the reddis database
@@ -20,19 +35,6 @@ class Cache:
         self._redis.flushdb()
 
 
-    def count_calls(method: Callable) -> Callable:
-        """
-        Fixing in a decorator
-        """
-        @wraps(method)
-        def wrapper(self, *args, **kwargs):
-            """
-            The wrapper function
-            """
-            key = method.__qualname__
-            self._redis.incr(key)
-            return method(self, *args, *kwargs)
-        return wrapper
 
 
     @count_calls
