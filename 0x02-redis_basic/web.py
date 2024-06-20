@@ -20,7 +20,6 @@ def get_page(url: str) -> str:
         print(f"{Returning cached content for {url}")
         return cached_html.decode('utf-8')
 
-
     response = requests.get(url)
     html_content = response.text
 
