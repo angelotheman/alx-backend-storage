@@ -4,6 +4,7 @@ Working with reddis
 """
 import redis
 import uuid
+from functools import wraps
 from  typing import Union, Callable
 
 
@@ -19,6 +20,22 @@ class Cache:
         self._redis.flushdb()
 
 
+    def count_calls(method: Callable) -> Callable:
+        """
+        Fixing in a decorator
+        """
+        @wraps(method)
+        def wrapper(self, *args, **kwargs):
+            """
+            The wrapper function
+            """
+            key = method.__qualname__
+            self._redis.incr(key)
+            return method(self, *args, *kwargs)
+        return wrapper
+
+
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generates a random key and converts values to str
