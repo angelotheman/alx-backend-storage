@@ -5,7 +5,31 @@ Working with reddis
 import redis
 import uuid
 from functools import wraps
-from  typing import Union, Callable
+from typing import Union, Callable, Any
+
+
+def call_history(method: Callable) -> Callable:
+    """
+    Checking and making a list of the call history
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs) -> Any:
+        """
+        Wrapper function that stores inputs and outputs
+        """
+        key_prefix = method.__qualname__
+        inputs_key = f"{key_prefix}:inputs"
+        outpus_key = f"{key_prefix}:outputs"
+
+        self._redis_rpush(inputs_key, str(args))
+
+        output = method(self, *args, **kwargs)
+
+        self._redis.rpush(outputs_key, output)
+
+        return output
+
+    return wrapper
 
 
 def count_calls(method: Callable) -> Callable:
@@ -36,8 +60,8 @@ class Cache:
 
 
 
-
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generates a random key and converts values to str
