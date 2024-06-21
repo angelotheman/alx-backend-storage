@@ -1,0 +1,3 @@
+// List all the databases
+
+echo 'show dbs' | mongo
