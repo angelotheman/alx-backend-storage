@@ -59,6 +59,26 @@ class Cache:
         self._redis.flushdb()
 
 
+    def replay(method: Callable) -> None:
+        """
+        Displays history of calls to the specified method.
+        """
+        key_prefix = method.__qualname__
+        inputs_key = f"{ky_prefix}:inputs"
+        outputs_key = f"{key_prefix}:outputs"
+
+        inputs = cache._redis.lrange(inputs_key, 0, -1)
+        outpus = cache._redis.lrange(outputs_key, 0, -1)
+
+        num_calls = min(len(inputs), len(outputs))
+
+        print(f"{key_prefix} was called {num_calls} times:")
+
+        for i in range(num_calls):
+            input_args = eval(inputs[i].decode('utf-8'))
+            output = outpus[i].decode('utf-8')
+            print(f"{key_prefix}(*{input_args}) -> {output}")
+
 
     @count_calls
     @call_history
