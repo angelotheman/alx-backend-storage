@@ -24,7 +24,7 @@ BEGIN
 		END IF;
 
 
-		CALL ComputeAverageWeightedScoreForUsers(user_id);
+		CALL ComputeAverageWeightedScoreForUser(user_id);
 	END LOOP;
 
 	CLOSE cur;
