@@ -18,7 +18,7 @@ BEGIN
 	-- Update the users table with the calculated average score
 	UPDATE users
 	SET average_score = avg_score
-	WHERE id = users_id;
+	WHERE id = user_id;
 
 END //
 
