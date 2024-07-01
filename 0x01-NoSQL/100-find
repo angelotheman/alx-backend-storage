@@ -1,0 +1,3 @@
+// List all documents with name in REGEXP
+
+db.school.find({name: /Holberton.*/}).forEach(printjson);
